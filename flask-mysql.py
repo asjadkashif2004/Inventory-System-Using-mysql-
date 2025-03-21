@@ -8,7 +8,7 @@ app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'flaskapp'  # Your actual database name
 app.config['MYSQL_PORT'] = 3307  # Add this line for the custom port
-
+#
 # Initialize MySQL
 mysql = MySQL(app)
 
