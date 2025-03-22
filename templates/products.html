@@ -1,0 +1,143 @@
+{% extends 'app.html' %}
+{% block content %}
+
+<style>
+    body {
+        background: linear-gradient(to right, #ff758c, #ff7eb3);
+    }
+
+    .container {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        margin-top: 20px;
+    }
+
+    .table {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .table thead {
+        background: #343a40;
+        color: white;
+    }
+
+    .table tbody tr:hover {
+        background: #f8f9fa;
+        transition: 0.3s;
+    }
+
+    .btn-success,
+    .btn-warning,
+    .btn-danger {
+        font-size: 14px;
+        padding: 7px 12px;
+    }
+
+    .dashboard-btn {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+    }
+
+    .modal-content {
+        background: #f8f9fa;
+        border-radius: 10px;
+    }
+
+    .modal-header {
+        background: #343a40;
+        color: white;
+        border-radius: 10px 10px 0 0;
+    }
+</style>
+
+<div class="container mt-4 position-relative">
+    <h2 class="mb-3">🛍️ Product Management</h2>
+
+    <!-- Back to Dashboard Button (Top Right) -->
+    <a href="{{ url_for('dashboard') }}" class="btn btn-primary dashboard-btn">🏠 Back to Dashboard</a>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="alert alert-success">
+        {{ messages[0] }}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Add Product Button -->
+    <button class="btn btn-success mb-3" data-toggle="modal" data-target="#addProductModal">
+        ➕ Add Product
+    </button>
+
+    <!-- Product Table -->
+    <table class="table table-bordered text-center">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Category</th>
+                <th>Stock</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product[0] }}</td> <!-- Product ID -->
+                <td>{{ product[1] }}</td> <!-- Name -->
+                <td>${{ product[2] }}</td> <!-- Price -->
+                <td>{{ product[3] }}</td> <!-- Category -->
+                <td>{{ product[4] }}</td> <!-- Stock -->
+                <td>
+                    <a href="{{ url_for('edit_product', id=product[0]) }}" class="btn btn-warning btn-sm">✏️ Edit</a>
+                    <a href="{{ url_for('delete_product', id=product[0]) }}" class="btn btn-danger btn-sm"
+                        onclick="return confirm('Are you sure you want to delete this product?');">🗑️ Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Add Product Modal -->
+<div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addProductLabel">➕ Add New Product</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ url_for('add_product') }}" method="POST">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">📌 Product Name</label>
+                        <input type="text" class="form-control" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="price" class="form-label">💰 Price</label>
+                        <input type="number" class="form-control" name="price" step="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="category" class="form-label">📂 Category</label>
+                        <input type="text" class="form-control" name="category" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="stock" class="form-label">📦 Stock</label>
+                        <input type="number" class="form-control" name="stock" required>
+                    </div>
+                    <button type="submit" class="btn btn-success">✅ Add Product</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
